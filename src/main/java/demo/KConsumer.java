@@ -59,15 +59,15 @@ public class KConsumer {
                 } finally {
                     System.out.printf("[%s]:unsubscribe from topic %s\n", client, topic);
                     consumer.unsubscribe();
+                    isRunning.compareAndSet(true, false);
                 }
-
             });
         } else {
             System.out.printf("consumer %s already started!\n", client);
         }
     }
 
-    public synchronized void stop() {
+    public void stop() {
         System.out.printf("stop consumer %s...\n", client);
         isRunning.compareAndSet(true, false);
     }

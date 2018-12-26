@@ -15,6 +15,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 
 public class KStreamWordCounterProducer {
     public static final List<String> ARTICLE = new ArrayList<>();
+    public static final List<String> ARTICLE2 = new ArrayList<>();
     static {
         ARTICLE.add("A 48 hour effort by the Trump administration to soothe jittery financial markets did little to reverse the free fall in stocks on Monday as the president’s renewed attack on the Federal Reserve and the specter of a prolonged government shutdown further rattled investors already worried about a global economic slowdown");
         ARTICLE.add("With a single tweet on Monday President Trump undercut his top economic advisers efforts to reassure the markets that he did not intend to fire Jerome H Powell as Fed chairman But Mr Trump who blames the Fed’s recent interest rate increases for the market gyrations said the only problem our economy has is the Fed an assertion that exacerbated the worst sell-off on Wall Street since the 2008 financial crisis");
@@ -37,6 +38,7 @@ public class KStreamWordCounterProducer {
         ARTICLE.add("Those attacks have drawn criticism from former Fed officials as well as lawmakers from both parties who say that any attempt to turn the Fed into a political organ would undermine its credibility Most developed nations have granted their central banks considerable autonomy over policymaking precisely because of concerns that politicians would seek to increase short-term growth at the expense of inflation and instability");
         ARTICLE.add("On Monday Senator Jeff Flake the retiring Arizona Republican posted a photograph on Twitter of a 5-billion-dollar bank note from Zimbabwe and urged the president to back off");
         ARTICLE.add("I’ve lived in countries where the Head of State has used the central bank for political purposes he said Please respect the Fed’s independence Mr President");
+        ARTICLE2.add("In the fall of 1968 Donald J Trump received a timely diagnosis of bone spurs in his heels that led to his medical exemption from the military during Vietnam");
     }
 
     public static void main(String... args) throws Exception {
@@ -54,6 +56,13 @@ public class KStreamWordCounterProducer {
         Producer<String, String> producer = new KafkaProducer(props);
 
         for (String line : ARTICLE)  {
+            String key = valueOf(current().nextInt(16));
+            System.out.printf("Send message: %s:%s\n", key, line);
+            producer.send(new ProducerRecord(INPUT_TOPIC, key, line));
+            Thread.sleep(5);
+        }
+
+        for (String line : ARTICLE2)  {
             String key = valueOf(current().nextInt(16));
             System.out.printf("Send message: %s:%s\n", key, line);
             producer.send(new ProducerRecord(INPUT_TOPIC, key, line));
